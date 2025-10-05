@@ -9,4 +9,4 @@ keras==2.14.0        # optional, if using Keras API
 joblib==1.3.2        # for saving/loading models
 flask==2.3.6         # if app.py uses Flask for web interface
 python-dotenv==1.0.0 # if using environment variables
-streamlit_autorefresh==0.1.0 # if using Streamlit for auto refresh
+streamlit_autorefresh # if using Streamlit for auto refresh
