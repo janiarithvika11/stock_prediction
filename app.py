@@ -54,27 +54,35 @@ if df is not None:
     df.dropna(inplace=True)
 
     # -------------------- CHECK IF MARKET OPEN --------------------
-    market_open = now.weekday() < 5  # Weekday
-    if not market_open:
-        st.warning("📅 Market is closed today (Weekend or Holiday). Prediction skipped.")
-        trend = None
+ # -------------------- CHECK IF MARKET OPEN --------------------
+market_open = (now.weekday() < 5) and (now.time() < market_close)
+
+if not market_open:
+    if now.weekday() >= 5:
+        st.warning("📅 Market is closed today (Weekend). Prediction skipped.")
+    elif now.time() >= market_close:
+        st.warning("⏰ Market has closed for the day (after 3:30 PM). Please check tomorrow.")
     else:
+        st.warning("📅 Market holiday. Prediction skipped.")
+    trend = None
+    
+else:
         # -------------------- MODEL TRAINING --------------------
-        features = ['Close', 'High', 'Low', 'Open', 'Volume',
-                    'Price_Change', 'High_Low', 'MA5', 'MA10', 'Volume_Change']
+    features = ['Close', 'High', 'Low', 'Open', 'Volume',
+                'Price_Change', 'High_Low', 'MA5', 'MA10', 'Volume_Change']
 
-        X = df[features]
-        y = df['Target']
+    X = df[features]
+    y = df['Target']
 
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False)
 
-        model = RandomForestClassifier(n_estimators=100, random_state=42)
-        model.fit(X_train, y_train)
+    model = RandomForestClassifier(n_estimators=100, random_state=42)
+    model.fit(X_train, y_train)
 
-        # -------------------- NEXT DAY PREDICTION --------------------
-        last_row = df.iloc[-1][features].values.reshape(1, -1)
-        next_day_prediction = model.predict(last_row)[0]
-        trend = "📈 UP" if next_day_prediction == 1 else "📉 DOWN"
+    # -------------------- NEXT DAY PREDICTION --------------------
+    last_row = df.iloc[-1][features].values.reshape(1, -1)
+    next_day_prediction = model.predict(last_row)[0]
+    trend = "📈 UP" if next_day_prediction == 1 else "📉 DOWN"
 
     # -------------------- DISPLAY METRICS --------------------
     col1, col2 = st.columns(2)
