@@ -52,7 +52,9 @@ if df is not None:
     df['Volume_Change'] = df['Volume'].pct_change()
     df['Target'] = (df['Close'].shift(-1) > df['Close']).astype(int)
     df.dropna(inplace=True)
-# -------------------- CHECK IF MARKET OPEN --------------------
+
+    # -------------------- CHECK IF MARKET OPEN --------------------
+ # -------------------- CHECK IF MARKET OPEN --------------------
 market_open = (now.weekday() < 5) and (now.time() < market_close)
 
 if not market_open:
