@@ -24,7 +24,7 @@ st.caption("Predict the **next day trend** using past stock performance 📅")
 ticker = st.text_input("Enter Stock Symbol (e.g., AAPL, INFY.NS, TCS.NS):", "AAPL")
 
 if st.button("🔄 Refresh Now"):
-    st.experimental_rerun()
+    st.rerun()
 
 # -------------------- DATE AND TIME --------------------
 now = datetime.datetime.now()
